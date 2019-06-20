@@ -28,9 +28,10 @@ import org.checkerframework.javacutil.PluginUtil;
  *       Framework.
  *   <li>add {@code jdk8.jar} to the compile time bootclasspath of the javac argument list passed to
  *       javac while using Java 8
- *   <li>patch JDK modules while using Java9+ using {@code --patch-module <module>=<annotatedModule>}
- *       annotated modules are present in {@code checker/dist/annotatedJDK/jdk*\/} directory
- *       all {@code --patch-module} arguments are provided using {@code checker/dist/annotatedJDK/jdk*\/Patch_Modules_argsfile}
+ *   <li>patch JDK modules while using Java9+ using {@code --patch-module
+ *       <module>=<annotatedModule>} annotated modules are present in {@code
+ *       checker/dist/annotatedJDK/jdk*\/} directory all {@code --patch-module} arguments are
+ *       provided using {@code checker/dist/annotatedJDK/jdk*\/Patch_Modules_argsfile}
  *   <li>parse and implement any special options used by the Checker Framework, e.g., using
  *       "shortnames" for annotation processors
  *   <li>pass all remaining command-line arguments to the real javac
@@ -61,8 +62,9 @@ public class CheckerMain {
         System.exit(exitStatus);
     }
 
-    /** The path to the annotated jdk jar to use in case of Java8
-     *  or directory containing annotated-jdk modules in case of Java9+
+    /**
+     * The path to the annotated jdk jar to use in case of Java8 or directory containing
+     * annotated-jdk modules in case of Java9+
      */
     protected final File jdkJar;
 
@@ -118,11 +120,13 @@ public class CheckerMain {
 
         if (PluginUtil.getJreVersion() > 8) {
             final int jreVersion = PluginUtil.getJreVersion();
-            final String jdkVersionFolderName = "jdk"+ jreVersion;
+            final String jdkVersionFolderName = "jdk" + jreVersion;
             this.jdkJar =
-                    extractFileArg(PluginUtil.JDK_PATH_OPT, new File(annotatedJDKSearchPath, jdkVersionFolderName), args);
-        }
-        else {
+                    extractFileArg(
+                            PluginUtil.JDK_PATH_OPT,
+                            new File(annotatedJDKSearchPath, jdkVersionFolderName),
+                            args);
+        } else {
             final String jdkJarName = PluginUtil.getJdkJarName();
             this.jdkJar =
                     extractFileArg(PluginUtil.JDK_PATH_OPT, new File(searchPath, jdkJarName), args);
