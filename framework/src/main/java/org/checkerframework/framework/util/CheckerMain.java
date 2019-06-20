@@ -27,7 +27,10 @@ import org.checkerframework.javacutil.PluginUtil;
  *   <li>add the {@code javac.jar} to the runtime classpath of the process that runs the Checker
  *       Framework.
  *   <li>add {@code jdk8.jar} to the compile time bootclasspath of the javac argument list passed to
- *       javac
+ *       javac while using Java 8
+ *   <li>patch JDK modules while using Java9+ using {@code --patch-module <module>=<annotatedModule>}
+ *       annotated modules are present in {@code checker/dist/annotatedJDK/jdk*\/} directory
+ *       all {@code --patch-module} arguments are provided using {@code checker/dist/annotatedJDK/jdk*\/Patch_Modules_argsfile}
  *   <li>parse and implement any special options used by the Checker Framework, e.g., using
  *       "shortnames" for annotation processors
  *   <li>pass all remaining command-line arguments to the real javac
@@ -58,7 +61,9 @@ public class CheckerMain {
         System.exit(exitStatus);
     }
 
-    /** The path to the annotated jdk jar to use. */
+    /** The path to the annotated jdk jar to use in case of Java8
+     *  or directory containing annotated-jdk modules in case of Java9+
+     */
     protected final File jdkJar;
 
     /** The path to the javacJar to use. */
@@ -97,6 +102,7 @@ public class CheckerMain {
 
         this.checkerJar = checkerJar;
         final File searchPath = checkerJar.getParentFile();
+        final File annotatedJDKSearchPath = new File(checkerJar.getParentFile(), "annotatedJDK");
 
         replaceShorthandProcessor(args);
         argListFiles = collectArgFiles(args);
@@ -110,9 +116,17 @@ public class CheckerMain {
         this.javacJar =
                 extractFileArg(PluginUtil.JAVAC_PATH_OPT, new File(searchPath, "javac.jar"), args);
 
-        final String jdkJarName = PluginUtil.getJdkJarName();
-        this.jdkJar =
-                extractFileArg(PluginUtil.JDK_PATH_OPT, new File(searchPath, jdkJarName), args);
+        if (PluginUtil.getJreVersion() > 8) {
+            final int jreVersion = PluginUtil.getJreVersion();
+            final String jdkVersionFolderName = "jdk"+ jreVersion;
+            this.jdkJar =
+                    extractFileArg(PluginUtil.JDK_PATH_OPT, new File(annotatedJDKSearchPath, jdkVersionFolderName), args);
+        }
+        else {
+            final String jdkJarName = PluginUtil.getJdkJarName();
+            this.jdkJar =
+                    extractFileArg(PluginUtil.JDK_PATH_OPT, new File(searchPath, jdkJarName), args);
+        }
 
         this.compilationBootclasspath = createCompilationBootclasspath(args);
         this.runtimeClasspath = createRuntimeClasspath(args);
