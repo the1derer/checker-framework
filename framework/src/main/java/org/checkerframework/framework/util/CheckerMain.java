@@ -30,8 +30,8 @@ import org.checkerframework.javacutil.PluginUtil;
  *       javac while using Java 8
  *   <li>patch JDK modules while using Java9+ using {@code --patch-module
  *       <module>=<annotatedModule>} annotated modules are present in {@code
- *       checker/dist/annotatedJDK/jdk*\/} directory all {@code --patch-module} arguments are
- *       provided using {@code checker/dist/annotatedJDK/jdk*\/Patch_Modules_argsfile}
+ *       checker/dist/annotatedJDK/jdk*\/} directory. All {@code --patch-module} arguments are
+ *       provided using {@code checker/dist/annotatedJDK/jdk{VERSION}\/Patch_Modules_argsfile}
  *   <li>parse and implement any special options used by the Checker Framework, e.g., using
  *       "shortnames" for annotation processors
  *   <li>pass all remaining command-line arguments to the real javac
@@ -712,7 +712,7 @@ public class CheckerMain {
                 missingAbsoluteFilenames.add(missingFile.getAbsolutePath());
             }
             throw new RuntimeException(
-                    "The following files could not be located: "
+                    "The following files/directory could not be located: "
                             + String.join(", ", missingAbsoluteFilenames));
         }
     }
