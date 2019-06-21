@@ -36,8 +36,8 @@ public class PluginUtil {
     /**
      * Option name for specifying an alternative jdk.jar location in case of Java8. The accompanying
      * value MUST be the path to the jar file (NOT the path to its encompassing directory) In Case
-     * of Java 9+ this option specifies directory containing alternate &lt;module&gt;.jar which will be
-     * patched using {@code --patch-module &lt;module&gt;=&lt;NewModule&gt;}
+     * of Java 9+ this option specifies directory containing alternate &lt;module&gt;.jar which will
+     * be patched using {@code --patch-module &lt;module&gt;=&lt;NewModule&gt;}
      */
     public static final String JDK_PATH_OPT = "-jdkJar";
 
