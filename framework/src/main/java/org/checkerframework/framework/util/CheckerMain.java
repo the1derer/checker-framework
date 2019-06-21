@@ -29,7 +29,7 @@ import org.checkerframework.javacutil.PluginUtil;
  *   <li>add {@code jdk8.jar} to the compile time bootclasspath of the javac argument list passed to
  *       javac while using Java 8
  *   <li>patch JDK modules while using Java9+ using {@code --patch-module
- *       <module>=<annotatedModule>} annotated modules are present in {@code
+ *       &lt;module&gt;=&lt;annotatedModule&gt;} annotated modules are present in {@code
  *       checker/dist/annotatedJDK/jdk*\/} directory. All {@code --patch-module} arguments are
  *       provided using {@code checker/dist/annotatedJDK/jdk{VERSION}\/Patch_Modules_argsfile}
  *   <li>parse and implement any special options used by the Checker Framework, e.g., using
