@@ -121,12 +121,11 @@ public class CheckerMain {
         if (PluginUtil.getJreVersion() > 8) {
             final int jreVersion = PluginUtil.getJreVersion();
             final String jdkVersionFolderName = "jdk" + jreVersion;
-            final File jdkVersionModuleLocation =
-                    new File(annotatedJDKSearchPath, jdkVersionFolderName);
-            this.jdkJar = extractFileArg(PluginUtil.JDK_PATH_OPT, jdkVersionModuleLocation, args);
-            final File patchModuleArgsFile =
-                    new File(jdkVersionModuleLocation, "Patch_Modules_argfile");
-            argListFiles.add(patchModuleArgsFile);
+            this.jdkJar =
+                    extractFileArg(
+                            PluginUtil.JDK_PATH_OPT,
+                            new File(annotatedJDKSearchPath, jdkVersionFolderName),
+                            args);
         } else {
             final String jdkJarName = PluginUtil.getJdkJarName();
             this.jdkJar =
