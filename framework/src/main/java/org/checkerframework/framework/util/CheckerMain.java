@@ -121,11 +121,12 @@ public class CheckerMain {
         if (PluginUtil.getJreVersion() > 8) {
             final int jreVersion = PluginUtil.getJreVersion();
             final String jdkVersionFolderName = "jdk" + jreVersion;
-            this.jdkJar =
-                    extractFileArg(
-                            PluginUtil.JDK_PATH_OPT,
-                            new File(annotatedJDKSearchPath, jdkVersionFolderName),
-                            args);
+            final File jdkVersionModuleLocation =
+                    new File(annotatedJDKSearchPath, jdkVersionFolderName);
+            this.jdkJar = extractFileArg(PluginUtil.JDK_PATH_OPT, jdkVersionModuleLocation, args);
+            final File patchModuleArgsFile =
+                    new File(jdkVersionModuleLocation, "Patch_Modules_argfile");
+            argListFiles.add(patchModuleArgsFile);
         } else {
             final String jdkJarName = PluginUtil.getJdkJarName();
             this.jdkJar =
@@ -448,6 +449,24 @@ public class CheckerMain {
         if (!argsListHasProcessorPath(argListFiles)) {
             args.add("-processorpath");
             args.add(quote(concatenatePaths(ppOpts)));
+        }
+
+        // Get CHECKERFRAMEWORK environment variable
+        final String CHECKERFRAMEWORK = System.getenv("CHECKERFRAMEWORK");
+
+        // addding "--patch-module" arguments to compiler Arguments
+        for (final String argLine : expandArgFiles(argListFiles)) {
+            if (argLine.contains("--patch-module")) {
+                String[] separateFlag = argLine.trim().split("\\s+");
+                args.add(separateFlag[0]);
+                if (separateFlag[1].contains("${CHECKERFRAMEWORK}")) {
+                    String withoutEnvVariable =
+                            separateFlag[1].replace("${CHECKERFRAMEWORK}", CHECKERFRAMEWORK);
+                    args.add(withoutEnvVariable);
+                } else {
+                    args.add(separateFlag[1]);
+                }
+            }
         }
 
         if (PluginUtil.getJreVersion() == 8) {
