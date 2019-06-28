@@ -26,12 +26,12 @@ import org.checkerframework.javacutil.PluginUtil;
  * <ul>
  *   <li>add the {@code javac.jar} to the runtime classpath of the process that runs the Checker
  *       Framework.
- *   <li>Add Annotated-JDK
+ *   <li>Use the annotated JDK.
  *       <ul>
- *         <li>If using Java8 add {@code jdk8.jar} to the compile time bootclasspath of the javac
+ *         <li>If using Java 8: add {@code jdk8.jar} to the compile-time bootclasspath of the javac
  *             argument list passed to javac.
- *         <li>If using Java 9+ patch JDK modules using {@code --patch-module
- *             <module>=<annotatedModule>}. Annotated modules are present in {@code
+ *         <li>If using Java 9+: patch JDK modules using {@code --patch-module
+ *             <module>=<annotatedModule>}. Annotated modules are present in the {@code
  *             checker/dist/annotatedJDK/jdk*\/} directory.
  *       </ul>
  *   <li>parse and implement any special options used by the Checker Framework, e.g., using
