@@ -65,8 +65,8 @@ public class CheckerMain {
     }
 
     /**
-     * In case of Java8 the path to the annotated jdk jar to use in case of Java8, or to a directory
-     * containing annotated-jdk modules in case of Java9+.
+     * In the case of Java 8, the path to the annotated jdk.jar. In the case of Java 9+, the path to
+     * a directory containing annotated-jdk modules.
      */
     protected final File jdkJar;
 
