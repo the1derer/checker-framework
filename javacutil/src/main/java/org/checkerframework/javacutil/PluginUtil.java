@@ -34,12 +34,13 @@ public class PluginUtil {
     public static final String JAVAC_PATH_OPT = "-javacJar";
 
     /**
-     * In case of Java8, option name for specifying an alternative jdk.jar location. The
-     * accompanying value MUST be the path to the jar file (NOT the path to its encompassing
-     * directory).
+     * Option name for specifying an alternative location for the annotated JDK.
      *
-     * <p>In Case of Java9+. this option specifies directory containing alternate &lt;module&gt;.jar
-     * which will patch using {@code --patch-module <module>=<NewModule>}.
+     * <p>In case of Java 8, an alternative jdk.jar location. The accompanying value MUST be the
+     * path to the jar file (NOT the path to its encompassing directory).
+     *
+     * <p>In case of Java 9+. a directory containing alternate &lt;module&gt;.jar which will patch
+     * using {@code --patch-module <module>=<NewModule>}.
      */
     public static final String JDK_PATH_OPT = "-jdkJar";
 
