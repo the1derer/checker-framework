@@ -24,7 +24,7 @@ import org.checkerframework.javacutil.PluginUtil;
  * This class behaves similarly to javac. CheckerMain does the following:
  *
  * <ul>
- *   <li>add the {@code javac.jar} to the runtime classpath of the process that runs the Checker
+ *   <li>Add the {@code javac.jar} to the runtime classpath of the process that runs the Checker
  *       Framework.
  *   <li>Use the annotated JDK.
  *       <ul>
@@ -34,9 +34,9 @@ import org.checkerframework.javacutil.PluginUtil;
  *             <module>=<annotatedModule>}. Annotated modules are present in the {@code
  *             checker/dist/annotatedJDK/jdk*\/} directory.
  *       </ul>
- *   <li>parse and implement any special options used by the Checker Framework, e.g., using
- *       "shortnames" for annotation processors
- *   <li>pass all remaining command-line arguments to the real javac
+ *   <li>Parse and implement any special options used by the Checker Framework, e.g., using
+ *       "shortnames" for annotation processors.
+ *   <li>Pass all remaining command-line arguments to the real javac.
  * </ul>
  *
  * To debug this class, use the {@code -AoutputArgsToFile=FILENAME} command-line argument or {@code
