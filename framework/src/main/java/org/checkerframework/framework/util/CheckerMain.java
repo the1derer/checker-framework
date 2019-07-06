@@ -106,7 +106,6 @@ public class CheckerMain {
 
         this.checkerJar = checkerJar;
         final File searchPath = checkerJar.getParentFile();
-        final File annotatedJDKSearchPath = new File(checkerJar.getParentFile(), "annotatedJDK");
 
         replaceShorthandProcessor(args);
         argListFiles = collectArgFiles(args);
@@ -121,14 +120,12 @@ public class CheckerMain {
                 extractFileArg(PluginUtil.JAVAC_PATH_OPT, new File(searchPath, "javac.jar"), args);
 
         if (PluginUtil.getJreVersion() > 8) {
+            final File annotatedJDKSearchPath = new File(searchPath, "annotatedJDK");
             final int jreVersion = PluginUtil.getJreVersion();
             final String jdkVersionFolderName = "jdk" + jreVersion;
             final File jdkVersionModuleLocation =
                     new File(annotatedJDKSearchPath, jdkVersionFolderName);
             this.jdkJar = extractFileArg(PluginUtil.JDK_PATH_OPT, jdkVersionModuleLocation, args);
-            final File patchModuleArgsFile =
-                    new File(jdkVersionModuleLocation, "Patch_Modules_argfile");
-            argListFiles.add(patchModuleArgsFile);
         } else {
             final String jdkJarName = PluginUtil.getJdkJarName();
             this.jdkJar =
@@ -453,21 +450,26 @@ public class CheckerMain {
             args.add(quote(concatenatePaths(ppOpts)));
         }
 
-        // Get CHECKERFRAMEWORK environment variable
-        final String CHECKERFRAMEWORK = System.getenv("CHECKERFRAMEWORK");
+        if (PluginUtil.getJreVersion() > 8) {
+            // Get Patch_Module_argfile
+            final File patchModuleArgsFile = new File(jdkJar, "Patch_Modules_argfile");
 
-        // addding "--patch-module" arguments to compiler Arguments
-        for (final String argLine : expandArgFiles(argListFiles)) {
-            if (argLine.contains("--patch-module")) {
-                String[] separateFlag = argLine.trim().split("\\s+");
-                args.add(separateFlag[0]);
-                if (separateFlag[1].contains("${CHECKERFRAMEWORK}")) {
+            // Get ${CHECKERFRAMEWORK}/checker/dist path
+            final String checkerframeworkDistDirectoryPath = checkerJar.getParentFile().getPath();
+
+            // adding "--patch-module" arguments to compiler Arguments
+            try {
+                for (final String argLine : PluginUtil.readFile(patchModuleArgsFile)) {
+                    String[] separateFlag = argLine.trim().split("\\s+");
+                    args.add(separateFlag[0]);
                     String withoutEnvVariable =
-                            separateFlag[1].replace("${CHECKERFRAMEWORK}", CHECKERFRAMEWORK);
+                            separateFlag[1].replace(
+                                    "${CHECKERFRAMEWORK_DIST}", checkerframeworkDistDirectoryPath);
                     args.add(withoutEnvVariable);
-                } else {
-                    args.add(separateFlag[1]);
                 }
+            } catch (final IOException exc) {
+                throw new RuntimeException(
+                        "Could not open file: " + patchModuleArgsFile.getAbsolutePath(), exc);
             }
         }
 
