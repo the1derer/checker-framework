@@ -454,8 +454,8 @@ public class CheckerMain {
             // Get Patch_Module_argfile
             final File patchModuleArgsFile = new File(jdkJar, "Patch_Modules_argfile");
 
-            // Get ${CHECKERFRAMEWORK}/checker/dist path
-            final String checkerframeworkDistDirectoryPath = checkerJar.getParentFile().getPath();
+            // Get currentJdkFolder
+            final String currentJdkFolder = jdkJar.getPath();
 
             // adding "--patch-module" arguments to compiler Arguments
             try {
@@ -463,8 +463,7 @@ public class CheckerMain {
                     String[] separateFlag = argLine.trim().split("\\s+");
                     args.add(separateFlag[0]);
                     String withoutEnvVariable =
-                            separateFlag[1].replace(
-                                    "${CHECKERFRAMEWORK_DIST}", checkerframeworkDistDirectoryPath);
+                            separateFlag[1].replace("${CURRENT_JDK_FOLDER}", currentJdkFolder);
                     args.add(withoutEnvVariable);
                 }
             } catch (final IOException exc) {
