@@ -31,8 +31,9 @@ import org.checkerframework.javacutil.PluginUtil;
  *         <li>If using Java 8: add {@code jdk8.jar} to the compile-time bootclasspath of the javac
  *             argument list passed to javac.
  *         <li>If using Java 9+: patch JDK modules using {@code --patch-module
- *             <module>=<annotatedModule>}. Annotated modules are present in the {@code
- *             checker/dist/annotatedJDK/jdk*\/} directory.
+ *             <module>=<annotatedModule>}. By default annotated modules are present in the {@code
+ *             checker/dist/annotatedJDK/jdk*\/} directory, but a user can specify different
+ *             location of folder contining patched JDK modules using {@code -jdkJar} option.
  *       </ul>
  *   <li>Parse and implement any special options used by the Checker Framework, e.g., using
  *       "shortnames" for annotation processors.
