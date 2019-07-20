@@ -65,11 +65,14 @@ public class CheckerMain {
         System.exit(exitStatus);
     }
 
-    /**
-     * In the case of Java 8, the path to the annotated jdk.jar. In the case of Java 9+, the path to
-     * a directory containing annotated-jdk modules.
-     */
+    /** In case of Java 8, the path to the annotated jdk.jar. Otherwise {@code null}. */
     protected final File jdkJar;
+
+    /**
+     * In case of Java 9+, the path to a directory containing annotated-jdk modules. Otherwise
+     * {@code null}.
+     */
+    protected final File jdkModulesPath;
 
     /** The path to the javacJar to use. */
     protected final File javacJar;
@@ -126,14 +129,18 @@ public class CheckerMain {
             final String jdkVersionFolderName = "jdk" + jreVersion;
             final File jdkVersionModuleLocation =
                     new File(annotatedJDKSearchPath, jdkVersionFolderName);
-            this.jdkJar = extractFileArg(PluginUtil.JDK_PATH_OPT, jdkVersionModuleLocation, args);
+            this.jdkModulesPath =
+                    extractFileArg(PluginUtil.JDK_PATH_OPT, jdkVersionModuleLocation, args);
+            this.jdkJar = null;
+            this.compilationBootclasspath = null;
         } else {
             final String jdkJarName = PluginUtil.getJdkJarName();
             this.jdkJar =
                     extractFileArg(PluginUtil.JDK_PATH_OPT, new File(searchPath, jdkJarName), args);
+            this.jdkModulesPath = null;
+            this.compilationBootclasspath = createCompilationBootclasspath(args);
         }
 
-        this.compilationBootclasspath = createCompilationBootclasspath(args);
         this.runtimeClasspath = createRuntimeClasspath(args);
         this.jvmOpts = extractJvmOpts(args);
 
@@ -145,7 +152,11 @@ public class CheckerMain {
     }
 
     protected void assertValidState() {
-        assertFilesExist(Arrays.asList(javacJar, jdkJar, checkerJar, checkerQualJar));
+        if (PluginUtil.getJreVersion() > 8) {
+            assertFilesExist(Arrays.asList(javacJar, jdkModulesPath, checkerJar, checkerQualJar));
+        } else {
+            assertFilesExist(Arrays.asList(javacJar, jdkJar, checkerJar, checkerQualJar));
+        }
     }
 
     public void addToClasspath(List<String> cpOpts) {
@@ -453,12 +464,12 @@ public class CheckerMain {
 
         if (PluginUtil.getJreVersion() > 8) {
             // Get Patch_Module_argfile
-            final File patchModuleArgsFile = new File(jdkJar, "Patch_Modules_argfile");
+            final File patchModuleArgsFile = new File(jdkModulesPath, "Patch_Modules_argfile");
 
             // Get currentJdkFolder
-            final String currentJdkFolder = jdkJar.getPath();
+            final String currentJdkFolder = jdkModulesPath.getPath();
 
-            // adding "--patch-module" arguments to compiler Arguments
+            // adding "--patch-module" arguments to compiler arguments
             try {
                 for (final String argLine : PluginUtil.readFile(patchModuleArgsFile)) {
                     String[] separateFlag = argLine.trim().split("\\s+");

@@ -43,7 +43,15 @@ public class PluginUtil {
      * patched using {@code --patch-module <module>=<NewModule>}. This directory must also contain
      * Patch_Modules_argfile containing all {@code --patch-module} arguments for all JDK modules.
      */
-    public static final String JDK_PATH_OPT = "-jdkJar";
+    public static final String JDK_PATH_OPT;
+
+    static {
+        if (PluginUtil.getJreVersion() == 8) {
+            JDK_PATH_OPT = "-jdkJar";
+        } else {
+            JDK_PATH_OPT = "-jdkModulesPath";
+        }
+    }
 
     public static List<File> toFiles(final List<String> fileNames) {
         final List<File> files = new ArrayList<>(fileNames.size());
