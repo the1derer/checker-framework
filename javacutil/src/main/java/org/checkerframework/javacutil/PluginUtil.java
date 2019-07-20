@@ -40,7 +40,7 @@ public class PluginUtil {
      * path to the jar file (NOT the path to its encompassing directory).
      *
      * <p>In case of Java 9+, a directory containing annotated &lt;module&gt;.jar. The supplied
-     * directory MUST contain {@literal Patch_Modules_argfile} containing all {@code --patch-module
+     * directory MUST contain {@code Patch_Modules_argfile} containing all {@code --patch-module
      * <jdkModule>=<annotatedModule>}.
      */
     public static final String JDK_PATH_OPT;
