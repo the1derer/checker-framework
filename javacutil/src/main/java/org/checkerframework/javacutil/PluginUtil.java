@@ -39,9 +39,9 @@ public class PluginUtil {
      * <p>In case of Java 8, an alternative jdk.jar location. The accompanying value MUST be the
      * path to the jar file (NOT the path to its encompassing directory).
      *
-     * <p>In case of Java 9+, a directory containing alternate &lt;module&gt;.jar which will be
-     * patched using {@code --patch-module <module>=<NewModule>}. This directory must also contain
-     * Patch_Modules_argfile containing all {@code --patch-module} arguments for all JDK modules.
+     * <p>In case of Java 9+, a directory containing annotated &lt;module&gt;.jar. The supplied
+     * directory MUST contain {@literal Patch_Modules_argfile} containing all {@code --patch-module
+     * <jdkModule>=<annotatedModule>}.
      */
     public static final String JDK_PATH_OPT;
 
