@@ -624,7 +624,13 @@ public class AnnotationUtils {
                 return expectedType.cast(val.getValue());
             }
         }
-        throw new BugInCF("No element with name \'" + elementName + "\' in annotation " + anno);
+        throw new BugInCF(
+                "No element with name \'"
+                        + elementName
+                        + "\' in annotation "
+                        + anno
+                        + "; valmap.keySet()="
+                        + valmap.keySet());
     }
 
     /**
