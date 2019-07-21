@@ -625,12 +625,9 @@ public class AnnotationUtils {
             }
         }
         throw new BugInCF(
-                "No element with name \'"
-                        + elementName
-                        + "\' in annotation "
-                        + anno
-                        + "; valmap.keySet()="
-                        + valmap.keySet());
+                String.format(
+                        "No element with name \'%s\' in annotation %s; useDefaults=%s, valmap.keySet()=%s",
+                        elementName, anno, useDefaults, valmap.keySet()));
     }
 
     /**
