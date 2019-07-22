@@ -53,6 +53,12 @@ public class PluginUtil {
         }
     }
 
+    /**
+     * Takes list of fileNames and creates list of files.
+     *
+     * @param fileNames list of fileNames
+     * @return a list of files created from {@code fileNames}
+     */
     public static List<File> toFiles(final List<String> fileNames) {
         final List<File> files = new ArrayList<>(fileNames.size());
         for (final String fn : fileNames) {
