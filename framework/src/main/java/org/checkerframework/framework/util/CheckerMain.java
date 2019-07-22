@@ -152,6 +152,10 @@ public class CheckerMain {
         assertValidState();
     }
 
+    /**
+     * Assert that all files required to use Checker Framework exist and if they don't, throw a
+     * RuntimeException with a list of the files that do not exist.
+     */
     protected void assertValidState() {
         if (PluginUtil.getJreVersion() > 8) {
             assertFilesExist(Arrays.asList(javacJar, jdkModulesPath, checkerJar, checkerQualJar));
