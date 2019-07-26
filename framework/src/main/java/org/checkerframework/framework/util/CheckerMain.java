@@ -17,6 +17,7 @@ import java.util.jar.JarInputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.javacutil.BugInCF;
 import org.checkerframework.javacutil.PluginUtil;
 
@@ -67,13 +68,13 @@ public class CheckerMain {
     }
 
     /** In case of Java 8, the path to the annotated jdk.jar. Otherwise {@code null}. */
-    protected final File jdkJar;
+    protected final @Nullable File jdkJar;
 
     /**
      * In case of Java 9+, the path to a directory containing annotated-jdk modules. Otherwise
      * {@code null}.
      */
-    protected final File jdkModulesPath;
+    protected final @Nullable File jdkModulesPath;
 
     /** The path to the javacJar to use. */
     protected final File javacJar;
@@ -84,7 +85,11 @@ public class CheckerMain {
     /** The path to checker-qual.jar. */
     protected final File checkerQualJar;
 
-    private final List<String> compilationBootclasspath;
+    /**
+     * In case of Java 8, the compile time bootclasspath added by user via {@code -Xbootclasspath}.
+     * Otherwise {@code null}.
+     */
+    private final @Nullable List<String> compilationBootclasspath;
 
     private final List<String> runtimeClasspath;
 
@@ -474,18 +479,28 @@ public class CheckerMain {
             // Get currentJdkFolder
             final String currentJdkFolder = jdkModulesPath.getPath();
 
-            // adding "--patch-module" arguments to compiler arguments
+            /**
+             * While using Java9+, {@code jdkModulesPath} directory MUST contain a {@code
+             * Patch_Module_argfile} containing {@code --patch-module <jdkModule>=<annotatedModule>}
+             * directives, one per line. The string `${CURRENT_JDK_FOLDER}` will be replaced with
+             * path to jdkModulesPath directory. The directory must also contain the refrenced
+             * &lt;module&gt;.jar files.
+             */
+            List<String> argsInPatchModuleArgfile; // List of all arguments in Patch_Module_argfile
             try {
-                for (final String argLine : PluginUtil.readFile(patchModuleArgsFile)) {
-                    String[] separateFlag = argLine.trim().split("\\s+");
-                    args.add(separateFlag[0]);
-                    String withoutEnvVariable =
-                            separateFlag[1].replace("${CURRENT_JDK_FOLDER}", currentJdkFolder);
-                    args.add(withoutEnvVariable);
-                }
+                argsInPatchModuleArgfile = PluginUtil.readFile(patchModuleArgsFile);
             } catch (final IOException exc) {
                 throw new RuntimeException(
                         "Could not open file: " + patchModuleArgsFile.getAbsolutePath(), exc);
+            }
+
+            // Adding "--patch-module" arguments to compiler arguments
+            for (final String argLine : argsInPatchModuleArgfile) {
+                String[] separateFlag = argLine.trim().split("\\s+");
+                args.add(separateFlag[0]);
+                String withoutEnvVariable =
+                        separateFlag[1].replace("${CURRENT_JDK_FOLDER}", currentJdkFolder);
+                args.add(withoutEnvVariable);
             }
         }
 
